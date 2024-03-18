@@ -156,7 +156,7 @@ function dp_follow_destinations (&$route, $destination) {
     $tcother = $matches[2];
 
     $tc = $route['timeconditions'][$tcnum];
-    $node->attribute('label', "TC: ".htmlspecialchars($tc[displayname],ENT_QUOTES));
+    $node->attribute('label', "TC: ".htmlspecialchars($tc['displayname'],ENT_QUOTES));
     $node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
     $node->attribute('target', '_blank');
     $node->attribute('shape', 'invhouse');
