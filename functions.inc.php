@@ -593,6 +593,7 @@ function dp_follow_destinations (&$route, $destination) {
     } else {
       $node->attribute('fillcolor', $pastels[12]);
     }
+    $node->attribute('label', $destination);
     $node->attribute('style', 'filled');
   }
 
@@ -701,8 +702,8 @@ function dp_load_tables(&$dproute) {
       $member = $qd['data'];
       if (preg_match("/Local\/(\d+)/", $member, $matches)) {
         $enum = $matches[1];
-				$name_ext='Ext'.$enum.'\\n'.$u[$enum]['name'];
-				$dproute['queues'][$id]['members'][$name_ext] = 'static';
+	$name_ext= htmlspecialchars('Ext'.$enum.'\\n'.$u[$enum]['name'],ENT_QUOTES);
+	$dproute['queues'][$id]['members'][$name_ext] = 'static';
       }
     }
   }
