@@ -413,7 +413,7 @@ function dp_follow_destinations (&$route, $destination) {
   $miscdestother = $matches[2];
 
   $miscdest = $route['miscdest'][$miscdestnum];
-  $node->attribute('label', "Misc Dest: " .htmlspecialchars($miscdest['description'],ENT_QUOTES)." ($miscdest['destdial'])");
+  $node->attribute('label', "Misc Dest: " .htmlspecialchars($miscdest['description'],ENT_QUOTES)." ($miscdest['destdial']));
   $node->attribute('URL', htmlentities('/admin/config.php?display=miscdests&view=form&extdisplay='.$miscdestnum));
   $node->attribute('target', '_blank');
   $node->attribute('shape', 'rpromoter');
