@@ -83,12 +83,13 @@ function dp_follow_destinations (&$route, $destination) {
   # the route object.
   if ($destination == '') {
     $dpgraph->node($route['extension'],
-                   array('label' => $route['extension'],
-			 'shape' => 'cds',
-                         'style' => 'filled',
-                         'URL'=> htmlentities('/admin/config.php?display=did&view=form&extdisplay='.$route['extension'].'%2F'),
-			 'target'=>'_blank',
-                         'fillcolor' => 'darkseagreen'));
+      array('label' => $route['extension'],
+				'shape' => 'cds',
+        'style' => 'filled',
+        'URL'=> htmlentities('/admin/config.php?display=did&view=form&extdisplay='.$route['extension'].'%2F'),
+				'target'=>'_blank',
+        'fillcolor' => 'darkseagreen')
+			);
     // $graph->node() returns the graph, not the node, so we always
     // have to get() the node after adding to the graph if we want
     // to save it for something.
@@ -156,7 +157,7 @@ function dp_follow_destinations (&$route, $destination) {
     $tcother = $matches[2];
 
     $tc = $route['timeconditions'][$tcnum];
-    $node->attribute('label', "TC: ".htmlspecialchars($tc[displayname],ENT_QUOTES));
+    $node->attribute('label', "TC: ".htmlspecialchars($tc['displayname'],ENT_QUOTES));
     $node->attribute('URL', htmlentities('/admin/config.php?display=timeconditions&view=form&itemid='.$tcnum));
     $node->attribute('target', '_blank');
     $node->attribute('shape', 'invhouse');
@@ -217,9 +218,12 @@ function dp_follow_destinations (&$route, $destination) {
 					$route['parent_edge_label'] = ' Dynamic Member';
 				}
 				$route['parent_node'] = $node;
-				dp_follow_destinations($route, $member);
+				
+				dp_follow_destinations($route, 'qmember'.$member);
+				
 			}
 		}
+		
   #
   # IVRs
   #
@@ -287,7 +291,7 @@ function dp_follow_destinations (&$route, $destination) {
     $rgother = $matches[2];
 
     $rg = $route['ringgroups'][$rgnum];
-    $node->attribute('label', "Ring Group: $rgnum: " .htmlspecialchars($rg[description], ENT_QUOTES));
+    $node->attribute('label', "Ring Group: $rgnum: " .htmlspecialchars($rg['description'], ENT_QUOTES));
     $node->attribute('URL', htmlentities('/admin/config.php?display=ringgroups&view=form&extdisplay='.$rgnum));
     $node->attribute('target', '_blank');
     $node->attribute('fillcolor', $pastels[4]);
@@ -542,7 +546,7 @@ function dp_follow_destinations (&$route, $destination) {
           $route['parent_node'] = $node;
           dp_follow_destinations($route, $d['dest']);
       }elseif ($d['dmode']=="fc_description"){
-           $node->attribute('label', "Call Flow: ".htmlspecialchars($d[dest],ENT_QUOTES) .$code);
+           $node->attribute('label', "Call Flow: ".htmlspecialchars($d['dest'],ENT_QUOTES) .$code);
       }
     }
     $daynight = $route['daynight'][$daynightnum];
@@ -586,13 +590,24 @@ function dp_follow_destinations (&$route, $destination) {
   #end of Blackhole
 
   //preg_match not found
-  } else {
+  } elseif (preg_match("/^qmember(Ext(\d+).+)/", $destination, $matches)) {
+		$qlabel=$matches[1];
+		echo $u[$dest]['name'];
+		$qextension=$matches[2];
+		$node->attribute('label', $qlabel);
+		$node->attribute('URL', htmlentities('/admin/config.php?display=extensions&extdisplay='.$qextension));
+		$node->attribute('target', '_blank');
+		$node->attribute('style', 'filled');
+		
+		
+	}	else {
     dplog(1, "Unknown destination type: $destination");
     if ($route['parent_edge_label'] == ' Dynamic Member') {
       $node->attribute('fillcolor', $neons[1]);
     } else {
       $node->attribute('fillcolor', $pastels[12]);
     }
+    $node->attribute('label', htmlspecialchars($destination,ENT_QUOTES));
     $node->attribute('style', 'filled');
   }
 
@@ -701,7 +716,8 @@ function dp_load_tables(&$dproute) {
       $member = $qd['data'];
       if (preg_match("/Local\/(\d+)/", $member, $matches)) {
         $enum = $matches[1];
-				$name_ext='Ext'.$enum.'\\n'.$u[$enum]['name'];
+				//$name_ext='Ext'.$enum.'\\n'.$u[$enum]['name'];
+				$name_ext= htmlspecialchars('Ext'.$enum.'\\n'.$u[$enum]['name'],ENT_QUOTES);
 				$dproute['queues'][$id]['members'][$name_ext] = 'static';
       }
     }

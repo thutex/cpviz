@@ -31,11 +31,13 @@ $full_list = is_array($full_list)?$full_list:array();
  // Output a selector for the users to choose an inbound route
 $inroutes = dp_load_incoming_routes();
 //echo "<pre>";print_r($inroutes);echo "</pre>";
+
 $html_txt .= "<form style=\"display: inline;\" name=\"routePrompt\" action=\"$_SERVER[PHP_SELF]\" method=\"POST\">\n";
 $html_txt .= "<input type=\"hidden\" name=\"display\" value=\"cpviz\">\n";
 $html_txt .= "Select an inbound route: ";
 $html_txt .= "<input list=\"nums\" value=\"$iroute\" name=\"iroute\" onfocus=\"this.value=''\" onchange=\"this.blur();\">\n";
 $html_txt .= "<datalist id=\"nums\">\n";
+
 if ($inroutes){
 	foreach ($inroutes as $ir) {
 	  $html_txt .= "<option value=\"$ir[extension]\">$ir[extension]: $ir[description]</option>\n";
@@ -43,22 +45,33 @@ if ($inroutes){
 }else{
 	$html_txt .= "<option>No Routes Found</option>\n";
 }
+
+
 if ($_POST['direction']=='LR'){$checked='checked';}
 $html_txt .= "</datalist>\n";
 $html_txt .= "<input name=\"Submit\" type=\"submit\" value=\"Visualize Dial Plan\">\n";
 $html_txt .= "<input type=\"checkbox\" id=\"LR\" name=\"direction\" value=\"LR\" $checked><label for=\"LR\">&nbsp;Horizontal</label>&nbsp;&nbsp;\n";
 $html_txt .= "</form>\n";
 
-//$graphPath="/tmp/graph.png";
 // Now, if $iroute is set, we will procede to display the call plan
 // graph for it.  If not, we would like to just bail, but I haven't
 // figured out how to do that in this framework.  If I exit() or 
 // throw an exception, then the page doesn't finish loading, no CSS
 // happens, it looks ugly like something went really wrong.
-//$iroute = '5052327992';
-if ($iroute != '') {
 
-  $dproute = dp_find_route($inroutes, $iroute);
+if ($iroute != '') {
+	if (strlen($iroute)!=10){
+		$type='Queue';
+		
+		$dproute = dp_find_route($queueroutes, $iroute);
+		$desc=$dproute['descr'];
+	}else{
+		$type='Inbound Route';
+		
+		$dproute = dp_find_route($inroutes, $iroute);
+		$desc=$dproute['description'];
+	}
+  
   if (empty($dproute)) {
     $html_txt .= "<h2>Error: Could not find inbound route for '$iroute'</h2>\n";
     // ugh: throw new \InvalidArgumentException("Could not find and inbound route for '$iroute'");
@@ -75,17 +88,18 @@ if ($iroute != '') {
 	  
     $gtext = $dproute['dpgraph']->attr('graph',array('rankdir'=>$_POST['direction']));
     $gtext = $dproute['dpgraph']->render();
-	//file_put_contents($graphPath, $dproute['dpgraph']->fetch('png'));
-//  $html_txt .= "<pre>\n" . "Dial Plan Graph for formatPhoneNumber($iroute):\n$gtext" . "\n</pre><br>\n";
+	
     dplog(5, "Dial Plan Graph for $iroute:\n$gtext");
     $gtext = preg_replace("/\n/", " ", $gtext);  // ugh, apparently viz chokes on newlines, wtf?
 
-    $html_txt .= "<script src=\"modules/cpviz/viz.js\"></script>\n";
-    $html_txt .= "<script src=\"modules/cpviz/full.render.js\"></script>\n";
-    $html_txt .= "<script src=\"modules/cpviz/html2canvas.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/assets/js/viz.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/assets/js/full.render.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/assets/js/html2canvas.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/assets/js/panzoom.min.js\"></script>\n";
+		
     $html_txt .= "<input type=\"button\" id=\"download\" value=\"Export as $iroute.png\">\n";
     $html_txt .= "<br><br>\n";
-    $html_txt .= "<div id='vizContainer'><h1>Dial Plan For Inbound Route ".formatPhoneNumber($iroute).": ".$dproute['description']."</h1></div>\n";
+    $html_txt .= "<div id='vizContainer'><h1>Dial Plan For ".$type." ".formatPhoneNumber($iroute).": ".$desc."</h1></div>\n";
     $html_txt .= "<script type=\"text/javascript\">\n";
     $html_txt .= "    var viz = new Viz();\n";
     $html_txt .= " viz.renderSVGElement('$gtext')  \n";
@@ -111,7 +125,11 @@ if ($iroute != '') {
 						} else {
 							window.open(uri);
 						}
-					}\n";
+					}\n";	
+	$html_txt .= "</script>\n";
+	$html_txt .= "<script type=\"text/javascript\">\n";
+	$html_txt .= "var element = document.querySelector('#graph0')\n";
+	$html_txt .= "panzoom(element)\n";
 	$html_txt .= "</script>\n";
   }
 }
