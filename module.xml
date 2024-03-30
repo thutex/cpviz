@@ -2,7 +2,7 @@
   <rawname>cpviz</rawname>
   <repo>unsupported</repo>
   <name>Dial Plan Visualizer</name>
-  <version>1.0.11</version>
+  <version>1.0.12</version>
   <publisher>Southwest Cyberport, Inc.</publisher>
   <license>GPLv3+</license>
   <licenselink>http://www.gnu.org/licenses/gpl-3.0.txt</licenselink>
@@ -12,6 +12,7 @@
     <cpviz>Dial Plan Visualizer</cpviz>
   </menuitems>
 	<changelog>
+		*1.0.12* AdamV Added panzoom
 		*1.0.11* AdamV Updated name and email for Voicemail
 		*1.0.10* AdamV expanded on initial
 		*1.0.8* First fully working release
