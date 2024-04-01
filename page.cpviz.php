@@ -92,10 +92,10 @@ if ($iroute != '') {
     dplog(5, "Dial Plan Graph for $iroute:\n$gtext");
     $gtext = preg_replace("/\n/", " ", $gtext);  // ugh, apparently viz chokes on newlines, wtf?
 
-    $html_txt .= "<script src=\"modules/cpviz/assets/js/viz.js\"></script>\n";
-    $html_txt .= "<script src=\"modules/cpviz/assets/js/full.render.js\"></script>\n";
-    $html_txt .= "<script src=\"modules/cpviz/assets/js/html2canvas.js\"></script>\n";
-    $html_txt .= "<script src=\"modules/cpviz/assets/js/panzoom.min.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/viz.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/full.render.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/html2canvas.js\"></script>\n";
+    $html_txt .= "<script src=\"modules/cpviz/panzoom.min.js\"></script>\n";
 		
     $html_txt .= "<input type=\"button\" id=\"download\" value=\"Export as $iroute.png\">\n";
     $html_txt .= "<br><br>\n";
