@@ -60,23 +60,13 @@ $html_txt .= "</form>\n";
 // happens, it looks ugly like something went really wrong.
 
 if ($iroute != '') {
-	if (strlen($iroute)!=10){
-		$type='Queue';
-		
-		$dproute = dp_find_route($queueroutes, $iroute);
-		$desc=$dproute['descr'];
-	}else{
-		$type='Inbound Route';
-		
-		$dproute = dp_find_route($inroutes, $iroute);
-		$desc=$dproute['description'];
-	}
+    
   
   if (empty($dproute)) {
     $html_txt .= "<h2>Error: Could not find inbound route for '$iroute'</h2>\n";
     // ugh: throw new \InvalidArgumentException("Could not find and inbound route for '$iroute'");
   } else {
-
+    $dproute = dp_find_route($inroutes, $iroute);
     //$html_txt .= "<pre>\n" . "$iroute route: " . print_r($dproute, true) . "\n</pre><br>\n";
 
     dp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
@@ -99,7 +89,7 @@ if ($iroute != '') {
 		
     $html_txt .= "<input type=\"button\" id=\"download\" value=\"Export as $iroute.png\">\n";
     $html_txt .= "<br><br>\n";
-    $html_txt .= "<div id='vizContainer'><h1>Dial Plan For ".$type." ".formatPhoneNumber($iroute).": ".$desc."</h1></div>\n";
+    $html_txt .= "<div id='vizContainer'><h1>Dial Plan For Inbound Route ".formatPhoneNumber($iroute).": ".$dproute['description']."</h1></div>\n";
     $html_txt .= "<script type=\"text/javascript\">\n";
     $html_txt .= "    var viz = new Viz();\n";
     $html_txt .= " viz.renderSVGElement('$gtext')  \n";
