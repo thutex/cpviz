@@ -60,15 +60,12 @@ $html_txt .= "</form>\n";
 // happens, it looks ugly like something went really wrong.
 
 if ($iroute != '') {
-    
-  
+  $dproute = dp_find_route($inroutes, $iroute);
   if (empty($dproute)) {
     $html_txt .= "<h2>Error: Could not find inbound route for '$iroute'</h2>\n";
     // ugh: throw new \InvalidArgumentException("Could not find and inbound route for '$iroute'");
   } else {
-    $dproute = dp_find_route($inroutes, $iroute);
     //$html_txt .= "<pre>\n" . "$iroute route: " . print_r($dproute, true) . "\n</pre><br>\n";
-
     dp_load_tables($dproute);   # adds data for time conditions, IVRs, etc.
     //$html_txt .= "<pre>\n" . "FreePBX config data: " . print_r($dproute, true) . "\n</pre><br>\n";
 
