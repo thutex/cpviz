@@ -47,7 +47,7 @@ function dp_load_incoming_routes() {
 function dp_find_route($routes, $num) {
 
   $match = array();
-  $pattern = '/[^0-9]/';   # remove all non-digits
+  $pattern = '/[^+0-9]/';   # remove all non-digits
   $num =  preg_replace($pattern, '', $num);
 
   // "extension" is the key for the routes hash
