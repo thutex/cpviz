@@ -86,8 +86,8 @@ function dp_follow_destinations (&$route, $destination) {
       array('label' => $route['extension'],
 				'shape' => 'cds',
         'style' => 'filled',
-        'URL'=> htmlentities('/admin/config.php?display=did&view=form&extdisplay='.$route['extension'].'%2F'),
-				'target'=>'_blank',
+	'URL'=> htmlentities('/admin/config.php?display=did&view=form&extdisplay='.urlencode($route['extension']).'%2F'),
+        'target'=>'_blank',
         'fillcolor' => 'darkseagreen')
 			);
     // $graph->node() returns the graph, not the node, so we always
