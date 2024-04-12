@@ -77,7 +77,8 @@ if ($iroute != '') {
     $gtext = $dproute['dpgraph']->render();
 	
     dplog(5, "Dial Plan Graph for $iroute:\n$gtext");
-    $gtext = preg_replace("/\n/", " ", $gtext);  // ugh, apparently viz chokes on newlines, wtf?
+    $gtext = str_replace("\n", "\\n", $gtext);  // ugh, apparently viz chokes on newlines and +, wtf?
+    $gtext = str_replace("+", "", $gtext);  
 
     $html_txt .= "<script src=\"modules/cpviz/viz.js\"></script>\n";
     $html_txt .= "<script src=\"modules/cpviz/full.render.js\"></script>\n";
