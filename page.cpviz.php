@@ -46,10 +46,11 @@ if ($inroutes){
 	$html_txt .= "<option>No Routes Found</option>\n";
 }
 
-
+if (empty($_POST) || $_POST['panzoom'] == 'on'){$panchecked='checked';}else{$panchecked='';}
 if ($_POST['direction']=='LR'){$checked='checked';}
 $html_txt .= "</datalist>\n";
 $html_txt .= "<input name=\"Submit\" type=\"submit\" value=\"Visualize Dial Plan\">\n";
+$html_txt .= "<input type=\"checkbox\" id=\"pan\" name=\"panzoom\" value=\"on\" $panchecked><label for=\"pan\">&nbsp;Pan/Zoom</label>&nbsp;&nbsp;\n";
 $html_txt .= "<input type=\"checkbox\" id=\"LR\" name=\"direction\" value=\"LR\" $checked><label for=\"LR\">&nbsp;Horizontal</label>&nbsp;&nbsp;\n";
 $html_txt .= "</form>\n";
 
@@ -83,7 +84,6 @@ if ($iroute != '') {
     $html_txt .= "<script src=\"modules/cpviz/viz.js\"></script>\n";
     $html_txt .= "<script src=\"modules/cpviz/full.render.js\"></script>\n";
     $html_txt .= "<script src=\"modules/cpviz/html2canvas.js\"></script>\n";
-    $html_txt .= "<script src=\"modules/cpviz/panzoom.min.js\"></script>\n";
 		
     $html_txt .= "<input type=\"button\" id=\"download\" value=\"Export as $iroute.png\">\n";
     $html_txt .= "<br><br>\n";
@@ -115,10 +115,13 @@ if ($iroute != '') {
 						}
 					}\n";	
 	$html_txt .= "</script>\n";
-	$html_txt .= "<script type=\"text/javascript\">\n";
-	$html_txt .= "var element = document.querySelector('#graph0')\n";
-	$html_txt .= "panzoom(element)\n";
-	$html_txt .= "</script>\n";
+	if ($panchecked=='checked'){
+		$html_txt .= "<script src=\"modules/cpviz/panzoom.min.js\"></script>\n";
+		$html_txt .= "<script type=\"text/javascript\">\n";
+		$html_txt .= "var element = document.querySelector('#graph0')\n";
+		$html_txt .= "panzoom(element)\n";
+		$html_txt .= "</script>\n";
+	}
   }
 }
 
