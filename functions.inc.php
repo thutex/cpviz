@@ -458,6 +458,25 @@ function dp_follow_destinations (&$route, $destination) {
 
   #end of Directory
 
+ #
+ # Recordings
+ #
+ } elseif (preg_match("/^play-system-recording,(\*?\d+),(\d+)/", $destination, $matches)) {
+  $recordingnum = $matches[1];
+  $recordingother = $matches[2];
+  $recording = $route['recordings'][$recordingnum];
+
+  $node->attribute('label', 'Play recording: '.htmlspecialchars($recording['description'],ENT_QUOTES).' <'.$recordingnum.'>');
+  $node->attribute('URL', htmlentities('/admin/config.php?display=recordings&action=edit&id=$recordingnum'));
+  $node->attribute('target', '_blank');
+  $node->attribute('shape', 'folder');
+  $node->attribute('fillcolor', 'gainsboro');
+  $node->attribute('style', 'filled');
+
+  #end of Recordings
+
+  }	  
+	  
   #
   # DISA
   #
@@ -812,7 +831,7 @@ function dp_load_tables(&$dproute) {
     dplog(9, "meetme dest:  conf=$id");
   }
 
-  # Directory
+ /* # Directory
   $query = "select * from directory_details";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
   if (DB::IsError($results)) {
@@ -823,7 +842,7 @@ function dp_load_tables(&$dproute) {
     $dproute['directory'][$id] = $directory;
     dplog(9, "directory=$id");
   }
-
+*/
   # DISA
   $query = "select * from disa";
   $results = $db->getAll($query, DB_FETCHMODE_ASSOC);
